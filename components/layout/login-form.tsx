@@ -1,3 +1,5 @@
+'use client';
+import { loginWithFirebase } from '@/app/login/login-controller';
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -15,11 +17,35 @@ import {
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
+import { useState } from 'react';
 
-export function LoginForm({
-  className,
-  ...props
-}: React.ComponentProps<'div'>) {
+const LoginForm = ({ className, ...props }: React.ComponentProps<'div'>) => {
+  const [result, setResult] = useState<string>();
+  const [email, setEmail] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
+  const [error, setError] = useState<string>('');
+
+  const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    try {
+      const result = await loginWithFirebase(email, password);
+      setResult(JSON.stringify(result));
+    } catch (e) {
+      setError(`Error: ${e}`);
+      // if (e instanceof FirebaseError) {
+      //   if (e.code == 'auth/invalid-credential') {
+      //     setError('Wrong email or password!');
+      //   } else {
+      //     setError(e.message);
+      //   }
+      // } else if (e instanceof Error) {
+      //   setError(e.message);
+      // } else {
+      //   setError(`Unknown error: ${e}`);
+      // }
+    }
+  };
+
   return (
     <div
       className={cn('flex flex-col gap-6', className)}
@@ -33,7 +59,16 @@ export function LoginForm({
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form>
+          <p className='text-xs'>
+            Local storage: {localStorage.getItem('access_token')}
+          </p>
+          <p className='text-xs'>Result: {result}</p>
+          {error && (
+            <p className='text-xs mb-6 p-4 border-red-500 rounded-sm border-1 bg-red-200 text-red-500'>
+              Error: {error}
+            </p>
+          )}
+          <form onSubmit={handleLogin}>
             <FieldGroup>
               <Field>
                 <FieldLabel htmlFor='email'>Email</FieldLabel>
@@ -41,7 +76,10 @@ export function LoginForm({
                   id='email'
                   type='email'
                   placeholder='email@example.com'
-                  required
+                  onChange={(input) => {
+                    setError('');
+                    setEmail(input.target.value);
+                  }}
                 />
               </Field>
               <Field>
@@ -58,7 +96,10 @@ export function LoginForm({
                   id='password'
                   type='password'
                   placeholder='********'
-                  required
+                  onChange={(input) => {
+                    setError('');
+                    setPassword(input.target.value);
+                  }}
                 />
               </Field>
               <Field>
@@ -77,4 +118,6 @@ export function LoginForm({
       </Card>
     </div>
   );
-}
+};
+
+export default LoginForm;
