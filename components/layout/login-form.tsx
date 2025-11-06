@@ -36,11 +36,11 @@ export function LoginForm({
           <form>
             <FieldGroup>
               <Field>
-                <FieldLabel htmlFor='email'>Email</FieldLabel>
+                <FieldLabel htmlFor='username'>Username</FieldLabel>
                 <Input
-                  id='email'
-                  type='email'
-                  placeholder='email@example.com'
+                  id='username'
+                  type='text'
+                  placeholder='username'
                   required
                 />
               </Field>
@@ -67,9 +67,9 @@ export function LoginForm({
                 {/* <Button variant="outline" type="button">
                   Login with Google
                 </Button> */}
-                <FieldDescription className='text-center'>
+                {/* <FieldDescription className='text-center'>
                   Don&apos;t have an account? <Link href='#'>Sign up</Link>
-                </FieldDescription>
+                </FieldDescription> */}
               </Field>
             </FieldGroup>
           </form>

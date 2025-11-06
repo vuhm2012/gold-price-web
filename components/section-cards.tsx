@@ -1,102 +1,107 @@
-import { IconTrendingDown, IconTrendingUp } from "@tabler/icons-react"
+import { Card, CardContent } from "@/components/ui/card";
+import { Pencil } from "lucide-react";
+import { FC } from "react";
+import { Button } from "./ui/button";
 
-import { Badge } from "@/components/ui/badge"
-import {
-  Card,
-  CardAction,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
+type SectionCardsProps = {
+  goldRingSellingPrice: number;
+  goldRingBuyingPrice: number;
+  goldJewelrySellingPrice: number;
+  goldJewelryBuyingPrice: number;
+  goldAlloySellingPrice: number;
+  goldAlloyBuyingPrice: number;
+  silverSellingPrice: number;
+  silverBuyingPrice: number;
+};
 
-export function SectionCards() {
+const SectionCards: FC<SectionCardsProps> = ({
+  goldRingSellingPrice,
+  goldRingBuyingPrice,
+  goldJewelrySellingPrice,
+  goldJewelryBuyingPrice,
+  goldAlloySellingPrice,
+  goldAlloyBuyingPrice,
+  silverSellingPrice,
+  silverBuyingPrice,
+}) => {
   return (
     <div className="*:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card grid grid-cols-1 gap-4 px-4 *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:shadow-xs lg:px-6 @xl/main:grid-cols-2 @5xl/main:grid-cols-4">
-      <Card className="@container/card">
-        <CardHeader>
-          <CardDescription>Total Revenue</CardDescription>
-          <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-            $1,250.00
-          </CardTitle>
-          <CardAction>
-            <Badge variant="outline">
-              <IconTrendingUp />
-              +12.5%
-            </Badge>
-          </CardAction>
-        </CardHeader>
-        <CardFooter className="flex-col items-start gap-1.5 text-sm">
-          <div className="line-clamp-1 flex gap-2 font-medium">
-            Trending up this month <IconTrendingUp className="size-4" />
-          </div>
-          <div className="text-muted-foreground">
-            Visitors for the last 6 months
-          </div>
-        </CardFooter>
-      </Card>
-      <Card className="@container/card">
-        <CardHeader>
-          <CardDescription>New Customers</CardDescription>
-          <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-            1,234
-          </CardTitle>
-          <CardAction>
-            <Badge variant="outline">
-              <IconTrendingDown />
-              -20%
-            </Badge>
-          </CardAction>
-        </CardHeader>
-        <CardFooter className="flex-col items-start gap-1.5 text-sm">
-          <div className="line-clamp-1 flex gap-2 font-medium">
-            Down 20% this period <IconTrendingDown className="size-4" />
-          </div>
-          <div className="text-muted-foreground">
-            Acquisition needs attention
-          </div>
-        </CardFooter>
-      </Card>
-      <Card className="@container/card">
-        <CardHeader>
-          <CardDescription>Active Accounts</CardDescription>
-          <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-            45,678
-          </CardTitle>
-          <CardAction>
-            <Badge variant="outline">
-              <IconTrendingUp />
-              +12.5%
-            </Badge>
-          </CardAction>
-        </CardHeader>
-        <CardFooter className="flex-col items-start gap-1.5 text-sm">
-          <div className="line-clamp-1 flex gap-2 font-medium">
-            Strong user retention <IconTrendingUp className="size-4" />
-          </div>
-          <div className="text-muted-foreground">Engagement exceed targets</div>
-        </CardFooter>
-      </Card>
-      <Card className="@container/card">
-        <CardHeader>
-          <CardDescription>Growth Rate</CardDescription>
-          <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-            4.5%
-          </CardTitle>
-          <CardAction>
-            <Badge variant="outline">
-              <IconTrendingUp />
-              +4.5%
-            </Badge>
-          </CardAction>
-        </CardHeader>
-        <CardFooter className="flex-col items-start gap-1.5 text-sm">
-          <div className="line-clamp-1 flex gap-2 font-medium">
-            Steady performance increase <IconTrendingUp className="size-4" />
-          </div>
-          <div className="text-muted-foreground">Meets growth projections</div>
-        </CardFooter>
-      </Card>
+      <PriceCard
+        title="Nhẫn tròn trơn"
+        buyingPrice={goldRingBuyingPrice}
+        sellingPrice={goldRingSellingPrice}
+      />
+      <PriceCard
+        title="Trang sức"
+        buyingPrice={goldJewelryBuyingPrice}
+        sellingPrice={goldJewelrySellingPrice}
+      />
+      <PriceCard
+        title="Vàng tây"
+        buyingPrice={goldAlloyBuyingPrice}
+        sellingPrice={goldAlloySellingPrice}
+      />
+      <PriceCard
+        title="Bạc"
+        buyingPrice={silverBuyingPrice}
+        sellingPrice={silverSellingPrice}
+      />
     </div>
-  )
-}
+  );
+};
+
+type PriceCardProps = {
+  title: string;
+  buyingPrice: number;
+  sellingPrice: number;
+};
+
+const PriceCard: FC<PriceCardProps> = ({
+  title,
+  buyingPrice,
+  sellingPrice,
+}) => {
+  return (
+    <Card className="@container/card">
+      <CardContent className="flex flex-col gap-3">
+        <div className="flex items-center justify-between">
+          <p className="text-3xl text-gray-500 font-medium">{title}</p>
+          {/* <span className="flex items-center gap-1 text-green-600 text-sm font-semibold">
+            <TrendingUp className="w-4 h-4" />
+            +2.3%
+          </span> */}
+        </div>
+
+        {/* <div>
+          <p className="text-2xl font-semibold text-gray-900">$2,350.00</p>
+          <p className="text-xs text-gray-500">Per ounce (USD)</p>
+        </div> */}
+
+        <div className="mt-2 flex flex-wrap justify-between">
+          <div>
+            <p className="text-md text-gray-500">Giá mua</p>
+            <p className="text-2xl font-medium text-green-700">
+              {buyingPrice.toLocaleString("vi", {
+                style: "currency",
+                currency: "VND",
+              })}
+            </p>
+          </div>
+          <div>
+            <p className="text-md text-gray-500">Giá bán</p>
+            <p className="text-2xl font-medium text-red-700">
+              {sellingPrice.toLocaleString("vi", {
+                style: "currency",
+                currency: "VND",
+              })}
+            </p>
+          </div>
+        </div>
+
+        <p className="mt-2 text-xs text-gray-500 italic">Updated 5 min ago</p>
+      </CardContent>
+    </Card>
+  );
+};
+
+export default SectionCards;
