@@ -15,7 +15,6 @@ import { BaseEntity } from "@/data/entities/base-entity";
 import { Keys } from "@/lib/keys";
 import { Routes } from "@/lib/routes";
 import { cn } from "@/lib/utils";
-import { Key } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -31,7 +30,6 @@ export function LoginForm({
   const handleOnLogin = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const login = async () => {
-      console.log(`username: ${username}, password: ${password}`);
       try {
         const response = await apiClient.post<BaseEntity<Aut000ResEntity>>(
           AUT000,
@@ -43,7 +41,7 @@ export function LoginForm({
         if (response?.result == "OK") {
           const data = response.data as Aut000ResEntity;
           localStorage.setItem(Keys.accessToken, data.access_token);
-          localStorage.setItem(Keys.refreshToken, data.refresh_token)
+          localStorage.setItem(Keys.refreshToken, data.refresh_token);
           router.push(Routes.home);
         }
       } catch {}
