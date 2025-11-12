@@ -11,11 +11,10 @@ import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import apiClient, { AUT000 } from "@/data/api-client";
 import { Aut000ResEntity } from "@/data/entities/aut000-res-entity";
-import { BaseEntity } from "@/data/entities/base-entity";
+import { BaseEntity, ErrorEntity } from "@/data/entities/base-entity";
 import { Keys } from "@/lib/keys";
 import { Routes } from "@/lib/routes";
 import { cn } from "@/lib/utils";
-import { Key } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -25,28 +24,32 @@ export function LoginForm({
 }: React.ComponentProps<"div">) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   const router = useRouter();
 
   const handleOnLogin = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const login = async () => {
-      console.log(`username: ${username}, password: ${password}`);
       try {
-        const response = await apiClient.post<BaseEntity<Aut000ResEntity>>(
-          AUT000,
-          {
-            username: username,
-            password: password,
-          }
-        );
+        const response = await apiClient.post<
+          BaseEntity<Aut000ResEntity | ErrorEntity>
+        >(AUT000, {
+          username: username,
+          password: password,
+        });
         if (response?.result == "OK") {
           const data = response.data as Aut000ResEntity;
           localStorage.setItem(Keys.accessToken, data.access_token);
-          localStorage.setItem(Keys.refreshToken, data.refresh_token)
+          localStorage.setItem(Keys.refreshToken, data.refresh_token);
           router.push(Routes.home);
+        } else {
+          const data = response?.data as ErrorEntity;
+          setErrorMessage(`${data.message_id}`);
         }
-      } catch {}
+      } catch (e) {
+        setErrorMessage(`${(e as Error).message}`);
+      }
     };
     login();
   };
@@ -71,6 +74,7 @@ export function LoginForm({
                   value={username}
                   placeholder="username"
                   onChange={(e) => {
+                    setErrorMessage("");
                     setUsername(e.target.value);
                   }}
                 />
@@ -91,10 +95,18 @@ export function LoginForm({
                   value={password}
                   placeholder="********"
                   onChange={(e) => {
+                    setErrorMessage("");
                     setPassword(e.target.value);
                   }}
                 />
               </Field>
+              {errorMessage && (
+                <Field>
+                  <p className="text-red-600 border p-2 rounded-lg border-red-600 shadow-sm">
+                    {errorMessage}
+                  </p>
+                </Field>
+              )}
               <Field>
                 {/* <Button type='submit'>Login</Button> */}
                 <Button>Login</Button>

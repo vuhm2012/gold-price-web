@@ -65,43 +65,43 @@ const EditPage: FC = () => {
 
   const priceItems = [
     {
-      key: "goldRingSellingPrice",
-      label: "Giá bán nhẫn tròn trơn",
-      color: "text-green-700",
-    },
-    {
       key: "goldRingBuyingPrice",
       label: "Giá mua nhẫn tròn trơn",
-      color: "text-red-700",
+      color: "text-green-700",
     },
     {
-      key: "goldJewelrySellingPrice",
-      label: "Giá mua vàng trang sức",
-      color: "text-green-700",
+      key: "goldRingSellingPrice",
+      label: "Giá bán nhẫn tròn trơn",
+      color: "text-red-700",
     },
     {
       key: "goldJewelryBuyingPrice",
       label: "Giá bán vàng trang sức",
-      color: "text-red-700",
+      color: "text-green-700",
     },
     {
-      key: "goldAlloySellingPrice",
-      label: "Giá mua vàng tây",
-      color: "text-green-700",
+      key: "goldJewelrySellingPrice",
+      label: "Giá mua vàng trang sức",
+      color: "text-red-700",
     },
     {
       key: "goldAlloyBuyingPrice",
       label: "Giá bán vàng tây",
-      color: "text-red-700",
+      color: "text-green-700",
     },
     {
-      key: "silverSellingPrice",
-      label: "Giá mua bạc",
-      color: "text-green-700",
+      key: "goldAlloySellingPrice",
+      label: "Giá mua vàng tây",
+      color: "text-red-700",
     },
     {
       key: "silverBuyingPrice",
       label: "Giá bán bạc",
+      color: "text-green-700",
+    },
+    {
+      key: "silverSellingPrice",
+      label: "Giá mua bạc",
       color: "text-red-700",
     },
   ];

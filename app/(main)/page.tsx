@@ -5,7 +5,7 @@ import apiClient, { AUT00, JEW001 } from "@/data/api-client";
 import { BaseEntity } from "@/data/entities/base-entity";
 import { Jew001ResEntity } from "@/data/entities/jew001-res-entity";
 import { Routes } from "@/lib/routes";
-import { DollarSign, Pencil, RefreshCcw } from "lucide-react";
+import { DollarSign, Key, Pencil, RefreshCcw } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
@@ -65,10 +65,16 @@ const HomePage = () => {
         </h1>
       </div>
       <div className="flex w-full justify-end px-4">
+        <Button variant="ghost" size="lg" className="flex" asChild>
+          <Link href={Routes.changePassword} className="dark:text-foreground">
+            <Key />
+          </Link>
+        </Button>
+
         <Button
           onClick={onRefresh}
           variant="ghost"
-          size="sm"
+          size="lg"
           className="flex"
           asChild
         >
@@ -77,7 +83,7 @@ const HomePage = () => {
           </div>
         </Button>
 
-        <Button variant="ghost" size="sm" className="flex" asChild>
+        <Button variant="ghost" size="lg" className="flex" asChild>
           <Link href={Routes.edit} className="dark:text-foreground">
             <Pencil />
           </Link>
