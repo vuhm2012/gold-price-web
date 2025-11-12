@@ -2,7 +2,10 @@ import { Keys } from '@/lib/keys';
 import { Routes } from '@/lib/routes';
 import axios, { AxiosError, AxiosInstance, AxiosResponse } from 'axios';
 
+export const JEW000 = '/jewelry/update-store-data';
 export const JEW001 = '/jewelry/get-store-data';
+export const AUT000 = '/auth/login';
+export const AUT00 = '/auth/check-token';
 
 class ApiClient {
   private static instance: ApiClient;

@@ -1,7 +1,5 @@
 import { Card, CardContent } from "@/components/ui/card";
-import { Pencil } from "lucide-react";
 import { FC } from "react";
-import { Button } from "./ui/button";
 
 type SectionCardsProps = {
   goldRingSellingPrice: number;
@@ -81,24 +79,18 @@ const PriceCard: FC<PriceCardProps> = ({
           <div>
             <p className="text-md text-gray-500">Giá mua</p>
             <p className="text-2xl font-medium text-green-700">
-              {buyingPrice.toLocaleString("vi", {
-                style: "currency",
-                currency: "VND",
-              })}
+              {buyingPrice == 0 ? '-' :buyingPrice.toLocaleString("en-us")}
             </p>
           </div>
           <div>
             <p className="text-md text-gray-500">Giá bán</p>
             <p className="text-2xl font-medium text-red-700">
-              {sellingPrice.toLocaleString("vi", {
-                style: "currency",
-                currency: "VND",
-              })}
+              {sellingPrice == 0 ? '-' : sellingPrice.toLocaleString("en-us")}
             </p>
           </div>
         </div>
 
-        <p className="mt-2 text-xs text-gray-500 italic">Updated 5 min ago</p>
+        {/* <p className="mt-2 text-xs text-gray-500 italic">Updated 5 min ago</p> */}
       </CardContent>
     </Card>
   );

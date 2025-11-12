@@ -31,6 +31,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <SidebarProvider
+          open={false}
           style={
             {
               "--sidebar-width": "calc(var(--spacing) * 72)",
@@ -40,7 +41,7 @@ export default function RootLayout({
         >
           <AppSidebar variant="inset" />
           <SidebarInset>
-            <SiteHeader />
+            {/* <SiteHeader /> */}
             <div className="flex flex-1 flex-col">
               <div className="@container/main flex flex-1 flex-col gap-2">
                 {children}
