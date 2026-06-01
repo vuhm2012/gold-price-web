@@ -42,7 +42,7 @@ export function LoginForm({
           const data = response.data as Aut000ResEntity;
           localStorage.setItem(Keys.accessToken, data.access_token);
           localStorage.setItem(Keys.refreshToken, data.refresh_token);
-          router.push(Routes.home);
+          router.push(Routes.dashboard);
         } else {
           const data = response?.data as ErrorEntity;
           setErrorMessage(`${data.message_id}`);
