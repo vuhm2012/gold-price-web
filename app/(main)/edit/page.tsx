@@ -4,7 +4,7 @@ import { Input } from '@/components/ui/input';
 import apiClient, { AUT00, JEW000, JEW001 } from '@/data/api-client';
 import { BaseEntity } from '@/data/entities/base-entity';
 import { Jew001ResEntity } from '@/data/entities/jew001-res-entity';
-import { Banknote, DollarSign, RotateCcw, Save } from 'lucide-react';
+import { ArrowLeft, Save } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { FC, useEffect, useState } from 'react';
 
@@ -63,78 +63,51 @@ const EditPage: FC = () => {
     fetchData();
   }, []);
 
-  type PriceType = {
-    key:
-      | 'goldRingBuyingPrice'
-      | 'goldRingSellingPrice'
-      | 'goldJewelryBuyingPrice'
-      | 'goldJewelrySellingPrice'
-      | 'goldAlloyBuyingPrice'
-      | 'goldAlloySellingPrice'
-      | 'silverBuyingPrice'
-      | 'silverSellingPrice';
-    label: string;
-    color: string;
+  type ProductItem = {
+    id: string;
+    name: string;
+    buyingKey: keyof typeof prices;
+    sellingKey: keyof typeof prices;
   };
 
-  const priceItems: PriceType[] = [
+  const products: ProductItem[] = [
     {
-      key: 'goldRingBuyingPrice',
-      label: 'Giá mua nhẫn tròn trơn',
-      color: 'text-green-700',
+      id: 'gold-ring',
+      name: 'Nhẫn tròn trơn',
+      buyingKey: 'goldRingBuyingPrice',
+      sellingKey: 'goldRingSellingPrice',
     },
     {
-      key: 'goldRingSellingPrice',
-      label: 'Giá bán nhẫn tròn trơn',
-      color: 'text-red-700',
+      id: 'gold-jewelry',
+      name: 'Trang sức',
+      buyingKey: 'goldJewelryBuyingPrice',
+      sellingKey: 'goldJewelrySellingPrice',
     },
     {
-      key: 'goldJewelryBuyingPrice',
-      label: 'Giá mua vàng trang sức',
-      color: 'text-green-700',
+      id: 'gold-alloy',
+      name: 'Vàng tây',
+      buyingKey: 'goldAlloyBuyingPrice',
+      sellingKey: 'goldAlloySellingPrice',
     },
     {
-      key: 'goldJewelrySellingPrice',
-      label: 'Giá bán vàng trang sức',
-      color: 'text-red-700',
-    },
-    {
-      key: 'goldAlloyBuyingPrice',
-      label: 'Giá mua vàng tây',
-      color: 'text-green-700',
-    },
-    {
-      key: 'goldAlloySellingPrice',
-      label: 'Giá bán vàng tây',
-      color: 'text-red-700',
-    },
-    {
-      key: 'silverBuyingPrice',
-      label: 'Giá mua bạc',
-      color: 'text-green-700',
-    },
-    {
-      key: 'silverSellingPrice',
-      label: 'Giá bán bạc',
-      color: 'text-red-700',
+      id: 'silver',
+      name: 'Bạc',
+      buyingKey: 'silverBuyingPrice',
+      sellingKey: 'silverSellingPrice',
     },
   ];
 
-  const handlePriceChange = (key: string, value: string) => {
-    // Allow only numbers and decimal point
-    // if (value === '' || /^\d*\.?\d{0,2}$/.test(value)) {
-    //   setPrices(prev => ({ ...prev, [key]: value }));
-    //   setSaved(false);
-    // }
-    if (/^\d+$/.test(value.replace(/,/g, ''))) {
+  const handlePriceChange = (key: keyof typeof prices, value: string) => {
+    const cleanValue = value.replace(/,/g, '');
+    if (cleanValue === '') {
       setPrices((prev) => ({
         ...prev,
-        [key]: Number(value.replace(/,/g, '')).toLocaleString('en-us'),
+        [key]: '',
       }));
-    } else if (value === '') {
+    } else if (/^\d+$/.test(cleanValue)) {
       setPrices((prev) => ({
         ...prev,
-        [key]: '0',
+        [key]: Number(cleanValue).toLocaleString('en-us'),
       }));
     }
   };
@@ -144,28 +117,28 @@ const EditPage: FC = () => {
       try {
         const response = await apiClient.post<BaseEntity<null>>(JEW000, {
           gold_ring_selling_price: Number(
-            prices['goldRingSellingPrice'].replace(/,/g, '')
+            (prices['goldRingSellingPrice'] || '0').replace(/,/g, '')
           ),
           gold_ring_buying_price: Number(
-            prices['goldRingBuyingPrice'].replace(/,/g, '')
+            (prices['goldRingBuyingPrice'] || '0').replace(/,/g, '')
           ),
           gold_jewelry_selling_price: Number(
-            prices['goldJewelrySellingPrice'].replace(/,/g, '')
+            (prices['goldJewelrySellingPrice'] || '0').replace(/,/g, '')
           ),
           gold_jewelry_buying_price: Number(
-            prices['goldJewelryBuyingPrice'].replace(/,/g, '')
+            (prices['goldJewelryBuyingPrice'] || '0').replace(/,/g, '')
           ),
           gold_alloy_selling_price: Number(
-            prices['goldAlloySellingPrice'].replace(/,/g, '')
+            (prices['goldAlloySellingPrice'] || '0').replace(/,/g, '')
           ),
           gold_alloy_buying_price: Number(
-            prices['goldAlloyBuyingPrice'].replace(/,/g, '')
+            (prices['goldAlloyBuyingPrice'] || '0').replace(/,/g, '')
           ),
           silver_selling_price: Number(
-            prices['silverSellingPrice'].replace(/,/g, '')
+            (prices['silverSellingPrice'] || '0').replace(/,/g, '')
           ),
           silver_buying_price: Number(
-            prices['silverBuyingPrice'].replace(/,/g, '')
+            (prices['silverBuyingPrice'] || '0').replace(/,/g, '')
           ),
         });
         if (response?.result == 'OK') {
@@ -181,90 +154,101 @@ const EditPage: FC = () => {
   };
 
   return (
-    <div className='min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 p-6 md:p-12'>
-      <div className='max-w-7xl mx-auto'>
+    <div className='min-h-screen bg-gradient-to-b from-red-950 via-red-900 to-stone-950 p-6 md:p-12 text-amber-50 selection:bg-yellow-500 selection:text-red-950 flex flex-col justify-start'>
+      <div className='max-w-5xl mx-auto w-full'>
         {/* Header */}
-        <div className='text-center mb-12'>
-          <div className='inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl mb-4 shadow-lg'>
-            <DollarSign className='w-8 h-8 text-white' />
-          </div>
-          <h1 className='text-4xl md:text-5xl font-bold text-gray-900 mb-3'>
-            Quản lý giá
-          </h1>
-          <p className='text-lg text-gray-600'>Điều chỉnh và cập nhật giá</p>
-        </div>
-
-        {/* Price Grid */}
-        <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8'>
-          {priceItems.map((item) => {
-            const Icon = Banknote;
-            return (
-              <div
-                key={item.key}
-                className='bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 p-6 border border-gray-100'
-              >
-                <div className='flex items-center gap-3 mb-4'>
-                  <div
-                    className={`p-2 rounded-lg bg-gradient-to-br from-gray-50 to-gray-100`}
-                  >
-                    <Icon className={`w-5 h-5 ${item.color}`} />
-                  </div>
-                  <h3 className={`font-semibold ${item.color}`}>
-                    {item.label}
-                  </h3>
-                </div>
-
-                <div>
-                  <Input
-                    type='text'
-                    value={prices[item.key]}
-                    onChange={(e) =>
-                      handlePriceChange(item.key, e.target.value)
-                    }
-                    className='w-full px-4 py-3 text-2xl font-bold text-gray-900 bg-gray-50 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all'
-                    placeholder='1,000,000'
-                  />
-                </div>
-              </div>
-            );
-          })}
-        </div>
-
-        {/* Action Buttons */}
-        <div className='flex flex-col sm:flex-row gap-4 justify-center items-center'>
-          <Button
-            onClick={handleSave}
-            className='group relative px-8 py-4 bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 flex items-center gap-3'
-          >
-            <Save className='w-5 h-5' />
-            Cập nhật gia
-          </Button>
-
+        <div className='flex items-center justify-between w-full mb-8 gap-4 px-2'>
+          {/* Back Button */}
           <Button
             onClick={handleBack}
-            className='px-8 py-4 bg-white text-gray-700 font-semibold rounded-xl shadow-md hover:shadow-lg hover:bg-gray-50 transition-all duration-300 flex items-center gap-3 border border-gray-200'
+            variant='ghost'
+            size='lg'
+            className='hover:bg-red-900/40 text-amber-300 hover:text-yellow-200 transition-colors cursor-pointer gap-2 font-bold uppercase tracking-wider px-3 md:px-4'
           >
-            <RotateCcw className='w-5 h-5' />
-            Quay về trang chủ
+            <ArrowLeft className='w-6 h-6' />
+            <span className='hidden md:inline'>Quay về</span>
+          </Button>
+
+          {/* Title */}
+          <h1 className='text-2xl md:text-4xl font-black bg-gradient-to-r from-amber-200 via-yellow-400 to-amber-200 bg-clip-text text-transparent uppercase tracking-wider drop-shadow-sm text-center flex-1'>
+            Quản lý giá
+          </h1>
+
+          {/* Save Button */}
+          <Button
+            onClick={handleSave}
+            variant='ghost'
+            size='lg'
+            className='hover:bg-red-900/40 text-yellow-400 hover:text-yellow-200 transition-colors cursor-pointer gap-2 font-black uppercase tracking-wider px-3 md:px-4'
+          >
+            <Save className='w-6 h-6' />
+            <span className='hidden md:inline'>Cập nhật</span>
           </Button>
         </div>
 
-        {/* Info Banner */}
-        {/* <div className="mt-12 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-2xl p-6">
-          <div className="flex items-start gap-4">
-            <div className="p-2 bg-blue-100 rounded-lg">
-              <TrendingUp className="w-5 h-5 text-blue-600" />
-            </div>
-            <div>
-              <h4 className="font-semibold text-gray-900 mb-1">Pricing Tips</h4>
-              <p className="text-gray-600 text-sm">
-                Keep your prices competitive and clear. Round numbers or .99
-                endings often perform better. Remember to save your changes
-                before leaving the page.
-              </p>
-            </div>
+        {/* Price Table */}
+        <div className='bg-red-950/30 backdrop-blur-xl rounded-3xl border border-yellow-500/20 shadow-[0_0_50px_rgba(0,0,0,0.3)] overflow-hidden transition-all duration-300 hover:shadow-[0_0_60px_rgba(234,179,8,0.08)] mb-8'>
+          <div className='overflow-x-auto'>
+            <table className='w-full min-w-[500px] border-collapse text-left'>
+              <thead>
+                <tr className='border-b border-yellow-500/20 bg-red-950/60'>
+                  <th className='py-4 md:py-6 px-4 md:px-8 text-base md:text-lg font-black uppercase tracking-wider text-yellow-300 w-2/5 align-middle'>
+                    Sản phẩm
+                  </th>
+                  <th className='py-4 md:py-6 px-4 md:px-8 text-base md:text-lg font-black uppercase tracking-wider text-yellow-300 text-center w-3/10 align-middle'>
+                    Giá mua
+                  </th>
+                  <th className='py-4 md:py-6 px-4 md:px-8 text-base md:text-lg font-black uppercase tracking-wider text-yellow-300 text-center w-3/10 align-middle'>
+                    Giá bán
+                  </th>
+                </tr>
+              </thead>
+              <tbody className='divide-y divide-yellow-500/10'>
+                {products.map((item) => {
+                  return (
+                    <tr
+                      key={item.id}
+                      className='hover:bg-red-900/20 transition-all duration-200'
+                    >
+                      {/* Product name cell */}
+                      <td className='py-4 md:py-6 px-4 md:px-8 align-middle'>
+                        <span className='font-black text-amber-100 text-xl md:text-2xl tracking-wider block'>
+                          {item.name.toUpperCase()}
+                        </span>
+                      </td>
+
+                      {/* Buying Price cell with Input */}
+                      <td className='py-4 md:py-6 px-4 md:px-8 align-middle'>
+                        <Input
+                          type='text'
+                          value={prices[item.buyingKey]}
+                          onChange={(e) =>
+                            handlePriceChange(item.buyingKey, e.target.value)
+                          }
+                          className='w-full px-4 py-3 text-2xl md:text-3xl font-extrabold text-amber-300 bg-red-950/40 border-2 border-yellow-500/20 rounded-xl focus:outline-none focus:border-yellow-400 focus:ring-4 focus:ring-yellow-400/10 transition-all text-center placeholder:text-amber-300/30'
+                          placeholder='0'
+                        />
+                      </td>
+
+                      {/* Selling Price cell with Input */}
+                      <td className='py-4 md:py-6 px-4 md:px-8 align-middle'>
+                        <Input
+                          type='text'
+                          value={prices[item.sellingKey]}
+                          onChange={(e) =>
+                            handlePriceChange(item.sellingKey, e.target.value)
+                          }
+                          className='w-full px-4 py-3 text-2xl md:text-3xl font-extrabold text-yellow-400 bg-red-950/40 border-2 border-yellow-500/20 rounded-xl focus:outline-none focus:border-yellow-400 focus:ring-4 focus:ring-yellow-400/10 transition-all text-center placeholder:text-yellow-400/30'
+                          placeholder='0'
+                        />
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
           </div>
-        </div> */}
+        </div>
       </div>
     </div>
   );

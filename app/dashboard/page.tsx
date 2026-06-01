@@ -1,8 +1,12 @@
 "use client";
 import SectionCards from "@/components/section-cards";
-import apiClient, { JEW001 } from "@/data/api-client";
+import { Button } from "@/components/ui/button";
+import apiClient, { AUT00, JEW001 } from "@/data/api-client";
 import { BaseEntity } from "@/data/entities/base-entity";
 import { Jew001ResEntity } from "@/data/entities/jew001-res-entity";
+import { Routes } from "@/lib/routes";
+import { Key, Pencil, RefreshCcw } from "lucide-react";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 
 const HomePage = () => {
@@ -14,6 +18,16 @@ const HomePage = () => {
   const [goldAlloyBuyingPrice, setGoldAlloyBuyingPrice] = useState(0);
   const [silverSellingPrice, setSilverSellingPrice] = useState(0);
   const [silverBuyingPrice, setSilverBuyingPrice] = useState(0);
+
+  useEffect(() => {
+    try {
+      const checkToken = async () => {
+        await apiClient.post<BaseEntity<null>>(AUT00, {});
+      };
+
+      checkToken();
+    } catch {}
+  }, []);
 
   const fetchData = async () => {
     try {
@@ -32,20 +46,47 @@ const HomePage = () => {
     } catch {}
   };
 
+  const onRefresh = () => {
+    fetchData();
+  };
+
   useEffect(() => {
     fetchData();
-    // Auto-refresh every 10 seconds to keep the data live on display
-    const interval = setInterval(fetchData, 10000);
-    return () => clearInterval(interval);
   }, []);
 
   return (
     <div className="flex flex-col gap-2 py-4 bg-gradient-to-b from-red-950 via-red-900 to-stone-950 h-screen max-h-screen overflow-hidden text-amber-50 selection:bg-yellow-500 selection:text-red-950">
-      <div className="relative flex items-center justify-center w-full max-w-5xl mx-auto px-4 md:px-8 mb-2">
-        <h1 className="text-center font-black bg-gradient-to-r from-amber-200 via-yellow-400 to-amber-200 bg-clip-text text-transparent tracking-wider drop-shadow-md uppercase leading-tight flex flex-col gap-1 md:gap-2">
+      <div className="relative flex flex-col md:flex-row items-center justify-between w-full max-w-5xl mx-auto px-4 md:px-8 gap-4 mb-2">
+        {/* Invisible spacer to perfectly center the title on desktop screens */}
+        <div className="w-[144px] hidden md:block"></div>
+
+        <h1 className="flex-1 text-center font-black bg-gradient-to-r from-amber-200 via-yellow-400 to-amber-200 bg-clip-text text-transparent tracking-wider drop-shadow-md uppercase leading-tight flex flex-col gap-1 md:gap-2">
           <span className="text-lg md:text-2xl lg:text-3xl font-bold">CÔNG TY TNHH VÀNG BẠC TRANG SỨC</span>
           <span className="text-3xl md:text-5xl lg:text-6xl tracking-widest font-black">HÙNG LAN</span>
         </h1>
+
+        <div className="flex items-center gap-1">
+          <Button variant="ghost" size="lg" className="flex hover:bg-red-900/40 text-amber-300 hover:text-yellow-200 transition-colors" asChild>
+            <Link href={Routes.changePassword}>
+              <Key className="w-6 h-6" />
+            </Link>
+          </Button>
+
+          <Button
+            onClick={onRefresh}
+            variant="ghost"
+            size="lg"
+            className="flex hover:bg-red-900/40 text-amber-300 hover:text-yellow-200 transition-colors cursor-pointer"
+          >
+            <RefreshCcw className="w-6 h-6" />
+          </Button>
+
+          <Button variant="ghost" size="lg" className="flex hover:bg-red-900/40 text-amber-300 hover:text-yellow-200 transition-colors" asChild>
+            <Link href={Routes.edit}>
+              <Pencil className="w-6 h-6" />
+            </Link>
+          </Button>
+        </div>
       </div>
       <div className="flex-1 flex flex-col justify-center min-h-0">
         <SectionCards

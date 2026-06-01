@@ -1,4 +1,3 @@
-import { Card, CardContent } from "@/components/ui/card";
 import { FC } from "react";
 
 type SectionCardsProps = {
@@ -22,77 +21,94 @@ const SectionCards: FC<SectionCardsProps> = ({
   silverSellingPrice,
   silverBuyingPrice,
 }) => {
+  const items = [
+    {
+      id: "gold-ring",
+      name: "Nhẫn tròn trơn",
+      buyingPrice: goldRingBuyingPrice,
+      sellingPrice: goldRingSellingPrice,
+    },
+    {
+      id: "gold-jewelry",
+      name: "Trang sức",
+      buyingPrice: goldJewelryBuyingPrice,
+      sellingPrice: goldJewelrySellingPrice,
+    },
+    {
+      id: "gold-alloy",
+      name: "Vàng tây",
+      buyingPrice: goldAlloyBuyingPrice,
+      sellingPrice: goldAlloySellingPrice,
+    },
+    {
+      id: "silver",
+      name: "Bạc",
+      buyingPrice: silverBuyingPrice,
+      sellingPrice: silverSellingPrice,
+    },
+  ];
+
   return (
-    <div className="*:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card grid grid-cols-1 gap-4 px-4 *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:shadow-xs lg:px-6 @xl/main:grid-cols-2 @5xl/main:grid-cols-4">
-      <PriceCard
-        title="Nhẫn tròn trơn"
-        buyingPrice={goldRingBuyingPrice}
-        sellingPrice={goldRingSellingPrice}
-      />
-      <PriceCard
-        title="Trang sức"
-        buyingPrice={goldJewelryBuyingPrice}
-        sellingPrice={goldJewelrySellingPrice}
-      />
-      <PriceCard
-        title="Vàng tây"
-        buyingPrice={goldAlloyBuyingPrice}
-        sellingPrice={goldAlloySellingPrice}
-      />
-      <PriceCard
-        title="Bạc"
-        buyingPrice={silverBuyingPrice}
-        sellingPrice={silverSellingPrice}
-      />
+    <div className="max-w-5xl mx-auto w-full px-4 md:px-6 pb-6 flex flex-col justify-center min-h-0">
+      <div className="bg-red-950/30 backdrop-blur-xl rounded-3xl border border-yellow-500/20 shadow-[0_0_50px_rgba(0,0,0,0.3)] overflow-hidden transition-all duration-300 hover:shadow-[0_0_60px_rgba(234,179,8,0.08)]">
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[500px] border-collapse text-left">
+            <thead>
+              <tr className="border-b border-yellow-500/20 bg-red-950/60">
+                <th className="py-4 md:py-6 px-4 md:px-8 text-base md:text-lg font-black uppercase tracking-wider text-yellow-300 w-2/5 align-middle">
+                  Sản phẩm
+                </th>
+                <th className="py-4 md:py-6 px-4 md:px-8 text-base md:text-lg font-black uppercase tracking-wider text-yellow-300 text-center w-3/10 align-middle">
+                  Giá mua
+                </th>
+                <th className="py-4 md:py-6 px-4 md:px-8 text-base md:text-lg font-black uppercase tracking-wider text-yellow-300 text-center w-3/10 align-middle">
+                  Giá bán
+                </th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-yellow-500/10">
+              {items.map((item) => {
+                return (
+                  <tr 
+                    key={item.id}
+                    className="hover:bg-red-900/20 transition-all duration-200"
+                  >
+                    {/* Product name cell */}
+                    <td className="py-4 md:py-6 px-4 md:px-8 align-middle">
+                      <span className="font-black text-amber-100 text-xl md:text-2xl tracking-wider block">
+                        {item.name.toUpperCase()}
+                      </span>
+                    </td>
+
+                    {/* Buying Price cell */}
+                    <td className="py-4 md:py-6 px-4 md:px-8 text-center align-middle">
+                      {item.buyingPrice === 0 ? (
+                        <span className="text-yellow-600/40 font-medium text-xl">-</span>
+                      ) : (
+                        <span className="text-3xl md:text-4xl font-extrabold text-amber-300 tracking-tight block">
+                          {item.buyingPrice.toLocaleString("en-us")}
+                        </span>
+                      )}
+                    </td>
+
+                    {/* Selling Price cell */}
+                    <td className="py-4 md:py-6 px-4 md:px-8 text-center align-middle">
+                      {item.sellingPrice === 0 ? (
+                        <span className="text-yellow-600/40 font-medium text-xl">-</span>
+                      ) : (
+                        <span className="text-3xl md:text-4xl font-extrabold text-yellow-400 tracking-tight block">
+                          {item.sellingPrice.toLocaleString("en-us")}
+                        </span>
+                      )}
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
-  );
-};
-
-type PriceCardProps = {
-  title: string;
-  buyingPrice: number;
-  sellingPrice: number;
-};
-
-const PriceCard: FC<PriceCardProps> = ({
-  title,
-  buyingPrice,
-  sellingPrice,
-}) => {
-  return (
-    <Card className="@container/card">
-      <CardContent className="flex flex-col gap-3">
-        <div className="flex items-center justify-between">
-          <p className="text-3xl text-gray-500 font-medium">{title}</p>
-          {/* <span className="flex items-center gap-1 text-green-600 text-sm font-semibold">
-            <TrendingUp className="w-4 h-4" />
-            +2.3%
-          </span> */}
-        </div>
-
-        {/* <div>
-          <p className="text-2xl font-semibold text-gray-900">$2,350.00</p>
-          <p className="text-xs text-gray-500">Per ounce (USD)</p>
-        </div> */}
-
-        <div className="mt-2 flex flex-wrap justify-between">
-          <div>
-            <p className="text-md text-gray-500">Giá mua</p>
-            <p className="text-2xl font-medium text-green-700">
-              {buyingPrice == 0 ? '-' :buyingPrice.toLocaleString("en-us")}
-            </p>
-          </div>
-          <div>
-            <p className="text-md text-gray-500">Giá bán</p>
-            <p className="text-2xl font-medium text-red-700">
-              {sellingPrice == 0 ? '-' : sellingPrice.toLocaleString("en-us")}
-            </p>
-          </div>
-        </div>
-
-        {/* <p className="mt-2 text-xs text-gray-500 italic">Updated 5 min ago</p> */}
-      </CardContent>
-    </Card>
   );
 };
 
