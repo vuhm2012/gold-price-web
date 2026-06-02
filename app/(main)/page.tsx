@@ -1,4 +1,9 @@
 "use client";
+
+import { Button } from "@/components/ui/button";
+import { Routes } from "@/lib/routes";
+import { BarChart3 } from "lucide-react";
+import Link from "next/link";
 import SectionCards from "@/components/section-cards";
 import apiClient, { JEW001 } from "@/data/api-client";
 import { BaseEntity } from "@/data/entities/base-entity";
@@ -59,9 +64,22 @@ const HomePage = () => {
           silverSellingPrice={silverSellingPrice}
           silverBuyingPrice={silverBuyingPrice}
         />
+
+        <div className="flex justify-center mt-8">
+          <Button
+            className="bg-gradient-to-r from-amber-500/20 to-yellow-600/15 text-yellow-300 border border-yellow-500/30 shadow-lg shadow-amber-900/20 hover:bg-red-900/30 transition-all duration-200 px-8 py-6 text-lg font-bold rounded-xl cursor-pointer"
+            asChild
+          >
+            <Link href={Routes.history}>
+              <BarChart3 className="w-6 h-6 mr-2" />
+              Xem biểu đồ lịch sử giá
+            </Link>
+          </Button>
+        </div>
       </div>
     </div>
   );
 };
 
 export default HomePage;
+

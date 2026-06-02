@@ -4,4 +4,5 @@ export const Routes = {
   login: '/login',
   edit: '/edit',
   changePassword: '/change-password',
+  history: '/history',
 };
