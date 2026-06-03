@@ -222,6 +222,8 @@ const PriceHistoryChart: FC = () => {
   const [historyData, setHistoryData] = useState<PriceHistoryDataPoint[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+  const [showSelling, setShowSelling] = useState(true);
+  const [showBuying, setShowBuying] = useState(true);
 
   const fetchHistory = useCallback(async (p: Period) => {
     setLoading(true);
@@ -358,41 +360,43 @@ const PriceHistoryChart: FC = () => {
       </div>
 
       {/* ──── Controls ──── */}
-      <div className="px-4 md:px-8 pb-4 md:pb-5 flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between">
-        {/* Product type selector */}
-        <div className="flex gap-1.5 overflow-x-auto pb-1 sm:pb-0 scrollbar-none -mx-1 px-1">
-          {PRICE_TYPES.map((type) => (
-            <button
-              key={type.key}
-              id={`type-btn-${type.key}`}
-              onClick={() => setSelectedType(type)}
-              className={`px-3 md:px-4 py-1.5 md:py-2 rounded-xl text-xs font-bold uppercase tracking-wider whitespace-nowrap transition-all duration-200 cursor-pointer ${
-                selectedType.key === type.key
-                  ? "bg-gradient-to-r from-amber-500/20 to-yellow-600/15 text-yellow-300 border border-yellow-500/30 shadow-lg shadow-amber-900/20"
-                  : "text-amber-200/40 hover:text-amber-200/70 hover:bg-red-900/30 border border-transparent"
-              }`}
-            >
-              {type.label}
-            </button>
-          ))}
-        </div>
+      <div className="px-4 md:px-8 pb-4 md:pb-5 flex flex-col gap-4">
+        <div className="flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between">
+          {/* Product type selector */}
+          <div className="flex gap-1.5 overflow-x-auto pb-1 sm:pb-0 scrollbar-none -mx-1 px-1">
+            {PRICE_TYPES.map((type) => (
+              <button
+                key={type.key}
+                id={`type-btn-${type.key}`}
+                onClick={() => setSelectedType(type)}
+                className={`px-3 md:px-4 py-1.5 md:py-2 rounded-xl text-xs font-bold uppercase tracking-wider whitespace-nowrap transition-all duration-200 cursor-pointer ${
+                  selectedType.key === type.key
+                    ? "bg-gradient-to-r from-amber-500/20 to-yellow-600/15 text-yellow-300 border border-yellow-500/30 shadow-lg shadow-amber-900/20"
+                    : "text-amber-200/40 hover:text-amber-200/70 hover:bg-red-900/30 border border-transparent"
+                }`}
+              >
+                {type.label}
+              </button>
+            ))}
+          </div>
 
-        {/* Period selector */}
-        <div className="flex gap-1 bg-red-950/50 rounded-xl p-1 border border-yellow-500/10 self-start sm:self-auto">
-          {PERIODS.map((p) => (
-            <button
-              key={p.value}
-              id={`period-btn-${p.value}`}
-              onClick={() => setPeriod(p.value)}
-              className={`px-2.5 md:px-3 py-1 md:py-1.5 rounded-lg text-xs font-semibold transition-all duration-200 cursor-pointer ${
-                period === p.value
-                  ? "bg-gradient-to-r from-yellow-500/20 to-amber-600/15 text-yellow-300 shadow-inner"
-                  : "text-amber-200/40 hover:text-amber-200/60"
-              }`}
-            >
-              {p.label}
-            </button>
-          ))}
+          {/* Period selector */}
+          <div className="flex gap-1 bg-red-950/50 rounded-xl p-1 border border-yellow-500/10 self-start sm:self-auto">
+            {PERIODS.map((p) => (
+              <button
+                key={p.value}
+                id={`period-btn-${p.value}`}
+                onClick={() => setPeriod(p.value)}
+                className={`px-2.5 md:px-3 py-1 md:py-1.5 rounded-lg text-xs font-semibold transition-all duration-200 cursor-pointer ${
+                  period === p.value
+                    ? "bg-gradient-to-r from-yellow-500/20 to-amber-600/15 text-yellow-300 shadow-inner"
+                    : "text-amber-200/40 hover:text-amber-200/60"
+                }`}
+              >
+                {p.label}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
 
@@ -474,90 +478,96 @@ const PriceHistoryChart: FC = () => {
                     strokeDasharray: "4 4",
                   }}
                 />
-                {/* ── Buying range band (max → min) ── */}
-                <Area
-                  type="monotone"
-                  dataKey="buyingMax"
-                  stroke="none"
-                  fill="url(#buyingRangeGradient)"
-                  fillOpacity={1}
-                  name="Cao nhất (mua)"
-                  dot={false}
-                  activeDot={false}
-                  legendType="none"
-                  isAnimationActive={false}
-                />
-                <Area
-                  type="monotone"
-                  dataKey="buyingMin"
-                  stroke="rgba(34,211,238,0.25)"
-                  strokeWidth={1}
-                  strokeDasharray="3 3"
-                  fill="white"
-                  fillOpacity={0}
-                  name="Thấp nhất (mua)"
-                  dot={false}
-                  activeDot={false}
-                  legendType="none"
-                  isAnimationActive={false}
-                />
-                {/* ── Buying latest line ── */}
-                <Area
-                  type="monotone"
-                  dataKey="buyingLatest"
-                  stroke="#22d3ee"
-                  strokeWidth={2}
-                  fill="url(#buyingGradient)"
-                  fillOpacity={1}
-                  name="Giá mua"
-                  dot={false}
-                  activeDot={{ r: 5, stroke: "#22d3ee", strokeWidth: 2, fill: "#1c1917" }}
-                  isAnimationActive={true}
-                  animationDuration={800}
-                  animationEasing="ease-out"
-                />
-                {/* ── Selling range band (max → min) ── */}
-                <Area
-                  type="monotone"
-                  dataKey="sellingMax"
-                  stroke="none"
-                  fill="url(#sellingRangeGradient)"
-                  fillOpacity={1}
-                  name="Cao nhất (bán)"
-                  dot={false}
-                  activeDot={false}
-                  legendType="none"
-                  isAnimationActive={false}
-                />
-                <Area
-                  type="monotone"
-                  dataKey="sellingMin"
-                  stroke="rgba(245,158,11,0.3)"
-                  strokeWidth={1}
-                  strokeDasharray="3 3"
-                  fill="white"
-                  fillOpacity={0}
-                  name="Thấp nhất (bán)"
-                  dot={false}
-                  activeDot={false}
-                  legendType="none"
-                  isAnimationActive={false}
-                />
-                {/* ── Selling latest line ── */}
-                <Area
-                  type="monotone"
-                  dataKey="sellingLatest"
-                  stroke="#f59e0b"
-                  strokeWidth={2.5}
-                  fill="url(#sellingGradient)"
-                  fillOpacity={1}
-                  name="Giá bán"
-                  dot={false}
-                  activeDot={{ r: 5, stroke: "#f59e0b", strokeWidth: 2, fill: "#1c1917" }}
-                  isAnimationActive={true}
-                  animationDuration={800}
-                  animationEasing="ease-out"
-                />
+                {/* ── Buying Components ── */}
+                {showBuying && (
+                  <>
+                    <Area
+                      type="linear"
+                      dataKey="buyingMax"
+                      stroke="none"
+                      fill="url(#buyingRangeGradient)"
+                      fillOpacity={1}
+                      name="Cao nhất (mua)"
+                      dot={false}
+                      activeDot={false}
+                      legendType="none"
+                      isAnimationActive={false}
+                    />
+                    <Area
+                      type="linear"
+                      dataKey="buyingMin"
+                      stroke="rgba(34,211,238,0.25)"
+                      strokeWidth={1}
+                      strokeDasharray="3 3"
+                      fill="white"
+                      fillOpacity={0}
+                      name="Thấp nhất (mua)"
+                      dot={false}
+                      activeDot={false}
+                      legendType="none"
+                      isAnimationActive={false}
+                    />
+                    <Area
+                      type="linear"
+                      dataKey="buyingLatest"
+                      stroke="#22d3ee"
+                      strokeWidth={2}
+                      fill="url(#buyingGradient)"
+                      fillOpacity={1}
+                      name="Giá mua"
+                      dot={{ r: 3, fill: "#1c1917", stroke: "#22d3ee", strokeWidth: 2 }}
+                      activeDot={{ r: 5, stroke: "#22d3ee", strokeWidth: 2, fill: "#1c1917" }}
+                      isAnimationActive={true}
+                      animationDuration={800}
+                      animationEasing="ease-out"
+                    />
+                  </>
+                )}
+                {/* ── Selling Components ── */}
+                {showSelling && (
+                  <>
+                    <Area
+                      type="linear"
+                      dataKey="sellingMax"
+                      stroke="none"
+                      fill="url(#sellingRangeGradient)"
+                      fillOpacity={1}
+                      name="Cao nhất (bán)"
+                      dot={false}
+                      activeDot={false}
+                      legendType="none"
+                      isAnimationActive={false}
+                    />
+                    <Area
+                      type="linear"
+                      dataKey="sellingMin"
+                      stroke="rgba(245,158,11,0.3)"
+                      strokeWidth={1}
+                      strokeDasharray="3 3"
+                      fill="white"
+                      fillOpacity={0}
+                      name="Thấp nhất (bán)"
+                      dot={false}
+                      activeDot={false}
+                      legendType="none"
+                      isAnimationActive={false}
+                    />
+                    <Area
+                      type="linear"
+                      dataKey="sellingLatest"
+                      stroke="#f59e0b"
+                      strokeWidth={2.5}
+                      fill="url(#sellingGradient)"
+                      fillOpacity={1}
+                      name="Giá bán"
+                      dot={{ r: 3, fill: "#1c1917", stroke: "#f59e0b", strokeWidth: 2 }}
+                      activeDot={{ r: 5, stroke: "#f59e0b", strokeWidth: 2, fill: "#1c1917" }}
+                      isAnimationActive={true}
+                      animationDuration={800}
+                      animationEasing="ease-out"
+                    />
+                  </>
+                )}
               </AreaChart>
             </ResponsiveContainer>
           )}
@@ -587,14 +597,30 @@ const PriceHistoryChart: FC = () => {
               <span className="text-[10px] text-amber-200/35 ml-0.5">Thấp nhất</span>
             </div>
             <span className="w-px h-3 bg-yellow-500/15" />
-            <div className="flex items-center gap-1.5">
-              <span className="w-3 h-3 rounded-full bg-amber-400 inline-block" />
-              <span className="text-[10px] text-amber-300/50">Bán</span>
-            </div>
-            <div className="flex items-center gap-1.5">
-              <span className="w-3 h-3 rounded-full bg-cyan-400 inline-block" />
-              <span className="text-[10px] text-cyan-300/50">Mua</span>
-            </div>
+            <button 
+              onClick={() => setShowSelling(!showSelling)}
+              className={`flex items-center gap-1.5 px-2.5 py-1 rounded-md border transition-all duration-200 cursor-pointer ${
+                showSelling 
+                  ? "bg-amber-500/15 border-amber-500/30 hover:bg-amber-500/25 shadow-sm" 
+                  : "bg-transparent border-transparent hover:border-amber-500/20 hover:bg-amber-500/10 opacity-60 grayscale"
+              }`}
+              title="Nhấn để ẩn/hiện Giá Bán"
+            >
+              <span className={`w-2.5 h-2.5 rounded-full ${showSelling ? "bg-amber-400" : "bg-amber-400/50"} inline-block`} />
+              <span className={`text-[10px] tracking-wide uppercase ${showSelling ? "text-amber-200 font-bold" : "text-amber-400/50 font-semibold"}`}>Bán</span>
+            </button>
+            <button 
+              onClick={() => setShowBuying(!showBuying)}
+              className={`flex items-center gap-1.5 px-2.5 py-1 rounded-md border transition-all duration-200 cursor-pointer ${
+                showBuying 
+                  ? "bg-cyan-500/15 border-cyan-500/30 hover:bg-cyan-500/25 shadow-sm" 
+                  : "bg-transparent border-transparent hover:border-cyan-500/20 hover:bg-cyan-500/10 opacity-60 grayscale"
+              }`}
+              title="Nhấn để ẩn/hiện Giá Mua"
+            >
+              <span className={`w-2.5 h-2.5 rounded-full ${showBuying ? "bg-cyan-400" : "bg-cyan-400/50"} inline-block`} />
+              <span className={`text-[10px] tracking-wide uppercase ${showBuying ? "text-cyan-200 font-bold" : "text-cyan-400/50 font-semibold"}`}>Mua</span>
+            </button>
           </div>
         )}
       </div>
